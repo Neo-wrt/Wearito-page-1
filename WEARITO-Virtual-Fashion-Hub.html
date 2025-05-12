@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WEARITO - AI-Powered Virtual Fashion Platform</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#6366f1',secondary:'#8b5cf6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+body {
+font-family: 'Inter', sans-serif;
+color: #1f2937;
+}
+.animate-spin {
+animation: spin 1s linear infinite;
+}
+@keyframes spin {
+from {
+transform: rotate(0deg);
+}
+to {
+transform: rotate(360deg);
+}
+}
+.animate-bounce {
+animation: bounce 1s cubic-bezier(0.28, 0.84, 0.42, 1);
+}
+@keyframes bounce {
+0%, 100% {
+transform: scale(1);
+}
+50% {
+transform: scale(1.2);
+}
+}
+input:focus, button:focus {
+outline: none;
+}
+input[type="range"] {
+-webkit-appearance: none;
+height: 4px;
+background: #e5e7eb;
+border-radius: 5px;
+background-image: linear-gradient(#6366f1, #6366f1);
+background-repeat: no-repeat;
+}
+input[type="range"]::-webkit-slider-thumb {
+-webkit-appearance: none;
+height: 16px;
+width: 16px;
+border-radius: 50%;
+background: #6366f1;
+cursor: pointer;
+box-shadow: 0 0 2px 0 #555;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+-webkit-appearance: none;
+box-shadow: none;
+border: none;
+background: transparent;
+}
+.custom-checkbox {
+position: relative;
+display: inline-block;
+width: 20px;
+height: 20px;
+background-color: #fff;
+border: 2px solid #d1d5db;
+border-radius: 4px;
+cursor: pointer;
+}
+.custom-checkbox.checked {
+background-color: #6366f1;
+border-color: #6366f1;
+}
+.custom-checkbox.checked::after {
+content: '';
+position: absolute;
+left: 6px;
+top: 2px;
+width: 5px;
+height: 10px;
+border: solid white;
+border-width: 0 2px 2px 0;
+transform: rotate(45deg);
+}
+.custom-switch {
+position: relative;
+display: inline-block;
+width: 44px;
+height: 24px;
+}
+.custom-switch input {
+opacity: 0;
+width: 0;
+height: 0;
+}
+.switch-slider {
+position: absolute;
+cursor: pointer;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: #e5e7eb;
+transition: .4s;
+border-radius: 24px;
+}
+.switch-slider:before {
+position: absolute;
+content: "";
+height: 18px;
+width: 18px;
+left: 3px;
+bottom: 3px;
+background-color: white;
+transition: .4s;
+border-radius: 50%;
+}
+input:checked + .switch-slider {
+background-color: #6366f1;
+}
+input:checked + .switch-slider:before {
+transform: translateX(20px);
+}
+.custom-radio {
+position: relative;
+display: inline-block;
+width: 20px;
+height: 20px;
+background-color: #fff;
+border: 2px solid #d1d5db;
+border-radius: 50%;
+cursor: pointer;
+}
+.custom-radio.checked {
+border-color: #6366f1;
+}
+.custom-radio.checked::after {
+content: '';
+position: absolute;
+width: 10px;
+height: 10px;
+background-color: #6366f1;
+border-radius: 50%;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+.rotate-controls {
+position: absolute;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+display: flex;
+gap: 12px;
+background-color: rgba(255, 255, 255, 0.9);
+padding: 8px 16px;
+border-radius: 24px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.view-angle {
+width: 40px;
+height: 40px;
+border-radius: 8px;
+overflow: hidden;
+cursor: pointer;
+transition: all 0.2s;
+}
+.view-angle:hover {
+transform: scale(1.05);
+}
+.view-angle.active {
+border: 2px solid #6366f1;
+}
+</style>
+</head>
+<body class="bg-white min-h-screen">
+<!-- Header & Navigation -->
+<header class="border-b border-gray-100 shadow-sm sticky top-0 bg-white z-50">
+<div class="container mx-auto px-4 py-3 flex items-center justify-between">
+<div class="flex items-center space-x-8">
+<div class="font-['Pacifico'] text-2xl text-primary">WEARITO</div>
+<nav class="hidden md:flex items-center space-x-6">
+<a href="#" class="text-primary font-medium">Home</a>
+<a href="https://readdy.ai/home/2724ff5f-0eda-4451-9b90-aaf3b5f5902c/c96d4bbf-11d8-4a15-a947-0fbc3d7b6d00" data-readdy="true" class="text-gray-600 hover:text-primary transition-colors">Explore</a>
+<a href="#" class="text-gray-600 hover:text-primary transition-colors">Virtual Fitting Room</a>
+<a href="#" class="text-gray-600 hover:text-primary transition-colors">My Wardrobe</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative">
+<input type="text" placeholder="Search items..." class="w-64 py-2 pl-10 pr-4 rounded-full bg-gray-50 border border-gray-200 text-sm focus:border-primary transition-colors">
+<div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
+<i class="ri-search-line"></i>
+</div>
+</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 cursor-pointer">
+<i class="ri-shopping-bag-line"></i>
+</div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full bg-primary/10 text-primary cursor-pointer">
+<i class="ri-user-line"></i>
+</div>
+</div>
+</div>
+</header>
+<main class="container mx-auto px-4 py-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- 3D Visualization Area -->
+<div class="lg:col-span-8 bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-[600px] relative">
+<div class="h-full w-full bg-gray-50 flex items-center justify-center relative">
+<img src="https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20professional%20studio%20lighting%2C%20high-end%20fashion%20photography%2C%20clean%20background%2C%20detailed%20fabric%20texture%2C%20fashion%20e-commerce%20visualization&width=800&height=600&seq=1&orientation=landscape" alt="3D Garment Model" class="object-contain h-full w-full object-top transition-opacity duration-300" id="mainProductImage">
+<!-- Zoom Controls -->
+<div class="absolute top-4 right-4 bg-white/90 rounded-full shadow-sm flex items-center p-1">
+<button class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+<i class="ri-zoom-out-line"></i>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary transition-colors">
+<i class="ri-zoom-in-line"></i>
+</button>
+</div>
+<!-- Rotation Controls -->
+<div class="rotate-controls">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-arrow-left-s-line"></i>
+</button>
+<div class="flex space-x-2">
+<div class="view-angle active">
+<img src="https://readdy.ai/api/search-image?query=thumbnail%20of%20front%20view%20of%20white%20dress%20on%20mannequin%2C%20minimalist%20style&width=40&height=40&seq=2&orientation=squarish" alt="Front view" class="w-full h-full object-cover">
+</div>
+<div class="view-angle">
+<img src="https://readdy.ai/api/search-image?query=thumbnail%20of%20side%20view%20of%20white%20dress%20on%20mannequin%2C%20minimalist%20style&width=40&height=40&seq=3&orientation=squarish" alt="Side view" class="w-full h-full object-cover">
+</div>
+<div class="view-angle">
+<img src="https://readdy.ai/api/search-image?query=thumbnail%20of%20back%20view%20of%20white%20dress%20on%20mannequin%2C%20minimalist%20style&width=40&height=40&seq=4&orientation=squarish" alt="Back view" class="w-full h-full object-cover">
+</div>
+<div class="view-angle">
+<img src="https://readdy.ai/api/search-image?query=thumbnail%20of%20detail%20view%20of%20white%20dress%20fabric%20texture%2C%20minimalist%20style&width=40&height=40&seq=5&orientation=squarish" alt="Detail view" class="w-full h-full object-cover">
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-arrow-right-s-line"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- Customization Panel -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+<h1 class="text-2xl font-semibold mb-2">Elegant Flare Dress</h1>
+<div class="flex items-center mb-4">
+<div class="flex items-center text-yellow-400">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+</div>
+<span class="text-sm text-gray-500 ml-2">4.7 (128 reviews)</span>
+</div>
+<p class="text-gray-600 mb-6">A versatile and timeless piece featuring a flattering silhouette with premium fabric that drapes beautifully.</p>
+<div class="mb-6">
+<h3 class="font-medium mb-3">Size Selection</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-4 py-2 border border-gray-200 rounded-button hover:border-primary text-sm whitespace-nowrap">XS</button>
+<button class="px-4 py-2 border border-gray-200 rounded-button hover:border-primary text-sm whitespace-nowrap">S</button>
+<button class="px-4 py-2 bg-primary text-white border border-primary rounded-button text-sm whitespace-nowrap">M</button>
+<button class="px-4 py-2 border border-gray-200 rounded-button hover:border-primary text-sm whitespace-nowrap">L</button>
+<button class="px-4 py-2 border border-gray-200 rounded-button hover:border-primary text-sm whitespace-nowrap">XL</button>
+</div>
+<div class="mt-2 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center text-primary">
+<i class="ri-magic-line"></i>
+</div>
+<span class="text-sm text-primary ml-1">AI recommends size M based on your profile</span>
+</div>
+</div>
+<div class="mb-6">
+<h3 class="font-medium mb-3">Color</h3>
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-white border-2 border-primary cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-black border-2 border-transparent hover:border-gray-300 cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-red-500 border-2 border-transparent hover:border-gray-300 cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent hover:border-gray-300 cursor-pointer"></div>
+<div class="w-8 h-8 rounded-full bg-green-500 border-2 border-transparent hover:border-gray-300 cursor-pointer"></div>
+</div>
+</div>
+<div class="mb-6">
+<h3 class="font-medium mb-3">Fit Adjustment</h3>
+<div class="flex justify-between text-sm text-gray-500 mb-2">
+<span>Loose</span>
+<span>Regular</span>
+<span>Slim</span>
+</div>
+<input type="range" min="1" max="3" value="2" class="w-full" id="fitSlider">
+</div>
+<div class="flex gap-3 mb-6">
+<button class="flex-1 bg-primary text-white py-3 rounded-button font-medium hover:bg-primary/90 transition-colors whitespace-nowrap">
+<i class="ri-shopping-bag-line mr-2"></i>Add to Cart
+</button>
+<button class="w-12 h-12 flex items-center justify-center border border-gray-200 rounded-button hover:border-primary transition-colors whitespace-nowrap">
+<i class="ri-heart-line text-gray-600"></i>
+</button>
+</div>
+<button class="w-full py-3 border border-gray-200 rounded-button font-medium hover:border-primary transition-colors whitespace-nowrap">
+<i class="ri-user-line mr-2"></i>Try On My Avatar
+</button>
+</div>
+<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+<h3 class="font-medium mb-4 flex items-center">
+<div class="w-5 h-5 flex items-center justify-center text-primary mr-2">
+<i class="ri-information-line"></i>
+</div>
+Product Details
+</h3>
+<div class="space-y-3 text-sm">
+<div class="flex justify-between">
+<span class="text-gray-500">Material</span>
+<span>95% Cotton, 5% Elastane</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">Style</span>
+<span>A-Line Silhouette</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">Length</span>
+<span>Midi (Below Knee)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">Care</span>
+<span>Machine Wash Cold</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Virtual Try-On Section -->
+<div class="mt-12 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+<h2 class="text-xl font-semibold mb-6">Virtual Try-On Experience</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-6">
+<div>
+<h3 class="font-medium mb-4">Avatar Customization</h3>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm text-gray-500 mb-2">Height</label>
+<div class="flex">
+<input type="text" value="5'7"" class="w-full px-4 py-2 border border-gray-200 rounded-l-button text-sm">
+<button class="px-4 py-2 bg-gray-100 border border-l-0 border-gray-200 rounded-r-button text-sm whitespace-nowrap">ft/in</button>
+</div>
+</div>
+<div>
+<label class="block text-sm text-gray-500 mb-2">Weight</label>
+<div class="flex">
+<input type="text" value="140" class="w-full px-4 py-2 border border-gray-200 rounded-l-button text-sm">
+<button class="px-4 py-2 bg-gray-100 border border-l-0 border-gray-200 rounded-r-button text-sm whitespace-nowrap">lbs</button>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-medium mb-4">Body Measurements</h3>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm text-gray-500 mb-2">Bust</label>
+<input type="text" value="36 in" class="w-full px-4 py-2 border border-gray-200 rounded-button text-sm">
+</div>
+<div>
+<label class="block text-sm text-gray-500 mb-2">Waist</label>
+<input type="text" value="28 in" class="w-full px-4 py-2 border border-gray-200 rounded-button text-sm">
+</div>
+<div>
+<label class="block text-sm text-gray-500 mb-2">Hips</label>
+<input type="text" value="38 in" class="w-full px-4 py-2 border border-gray-200 rounded-button text-sm">
+</div>
+<div>
+<label class="block text-sm text-gray-500 mb-2">Shoulder Width</label>
+<input type="text" value="15 in" class="w-full px-4 py-2 border border-gray-200 rounded-button text-sm">
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<label class="custom-switch">
+<input type="checkbox" checked>
+<span class="switch-slider"></span>
+</label>
+<span class="ml-2 text-sm">Use saved measurements</span>
+</div>
+<button class="px-4 py-2 bg-primary text-white rounded-button text-sm hover:bg-primary/90 transition-colors whitespace-nowrap">
+<i class="ri-refresh-line mr-1"></i>Update Avatar
+</button>
+</div>
+</div>
+<div class="bg-gray-50 rounded-lg h-[300px] flex items-center justify-center relative overflow-hidden">
+<img src="https://readdy.ai/api/search-image?query=digital%20avatar%20of%20a%20female%20model%20wearing%20a%20white%20dress%2C%203D%20visualization%2C%20fashion%20tech%2C%20virtual%20try-on%20technology%2C%20clean%20background%2C%20professional%20lighting&width=400&height=600&seq=6&orientation=portrait" alt="Virtual Avatar" class="h-full object-contain object-top">
+<div class="absolute bottom-4 left-4 right-4 flex justify-between">
+<button class="px-4 py-2 bg-white/90 rounded-full text-sm shadow-sm hover:bg-white transition-colors whitespace-nowrap">
+<i class="ri-camera-line mr-1"></i>Try with AR
+</button>
+<button class="px-4 py-2 bg-white/90 rounded-full text-sm shadow-sm hover:bg-white transition-colors whitespace-nowrap">
+<i class="ri-share-line mr-1"></i>Share
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Recommendations -->
+<div class="mt-12">
+<h2 class="text-xl font-semibold mb-6">Complete Your Look</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-64 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=elegant%20black%20high%20heels%20shoes%20on%20clean%20white%20background%2C%20professional%20product%20photography%2C%20fashion%20e-commerce%2C%20detailed%20texture&width=300&height=400&seq=7&orientation=portrait" alt="Black Heels" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute top-3 right-3">
+<button class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-heart-line"></i>
+</button>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-xs mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<span class="text-gray-500 ml-1">5.0</span>
+</div>
+<h3 class="font-medium mb-1">Classic Black Heels</h3>
+<p class="text-gray-500 text-sm mb-3">Perfect pairing with your dress</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$89.99</span>
+<div class="flex items-center text-primary text-sm">
+<i class="ri-magic-line mr-1"></i>
+<span>98% match</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-64 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=elegant%20silver%20necklace%20with%20small%20pendant%20on%20clean%20white%20background%2C%20professional%20jewelry%20photography%2C%20fashion%20e-commerce%2C%20detailed%20texture&width=300&height=400&seq=8&orientation=portrait" alt="Silver Necklace" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute top-3 right-3">
+<button class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-heart-line"></i>
+</button>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-xs mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-1">4.5</span>
+</div>
+<h3 class="font-medium mb-1">Silver Pendant Necklace</h3>
+<p class="text-gray-500 text-sm mb-3">Elegant accessory for any outfit</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$45.00</span>
+<div class="flex items-center text-primary text-sm">
+<i class="ri-magic-line mr-1"></i>
+<span>95% match</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-64 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=elegant%20small%20white%20clutch%20purse%20on%20clean%20white%20background%2C%20professional%20product%20photography%2C%20fashion%20e-commerce%2C%20detailed%20texture&width=300&height=400&seq=9&orientation=portrait" alt="White Clutch" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute top-3 right-3">
+<button class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-heart-line"></i>
+</button>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-xs mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-line"></i>
+<span class="text-gray-500 ml-1">4.0</span>
+</div>
+<h3 class="font-medium mb-1">Minimalist Clutch Bag</h3>
+<p class="text-gray-500 text-sm mb-3">Sleek design with ample space</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$65.50</span>
+<div class="flex items-center text-primary text-sm">
+<i class="ri-magic-line mr-1"></i>
+<span>92% match</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-64 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=elegant%20gold%20bracelet%20on%20clean%20white%20background%2C%20professional%20jewelry%20photography%2C%20fashion%20e-commerce%2C%20detailed%20texture&width=300&height=400&seq=10&orientation=portrait" alt="Gold Bracelet" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute top-3 right-3">
+<button class="w-8 h-8 flex items-center justify-center bg-white/90 rounded-full shadow-sm text-gray-600 hover:text-primary transition-colors">
+<i class="ri-heart-line"></i>
+</button>
+</div>
+</div>
+<div class="p-4">
+<div class="flex items-center text-yellow-400 text-xs mb-1">
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-fill"></i>
+<i class="ri-star-half-fill"></i>
+<span class="text-gray-500 ml-1">4.7</span>
+</div>
+<h3 class="font-medium mb-1">Delicate Gold Bracelet</h3>
+<p class="text-gray-500 text-sm mb-3">Subtle elegance for your wrist</p>
+<div class="flex justify-between items-center">
+<span class="font-semibold">$38.99</span>
+<div class="flex items-center text-primary text-sm">
+<i class="ri-magic-line mr-1"></i>
+<span>90% match</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Trending Styles -->
+<div class="mt-12">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-xl font-semibold">Trending Styles</h2>
+<div class="flex space-x-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:border-primary hover:text-primary transition-colors">
+<i class="ri-arrow-left-s-line"></i>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:border-primary hover:text-primary transition-colors">
+<i class="ri-arrow-right-s-line"></i>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-80 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=fashion%20model%20wearing%20elegant%20business%20casual%20outfit%20with%20blazer%20and%20pants%2C%20professional%20fashion%20photography%2C%20clean%20studio%20background%2C%20full%20body%20shot&width=400&height=600&seq=11&orientation=portrait" alt="Business Casual Look" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+<div class="p-6 text-white">
+<h3 class="text-lg font-semibold mb-1">Modern Business Casual</h3>
+<p class="text-white/80 text-sm mb-3">Perfect for office and beyond</p>
+<button class="px-4 py-2 bg-white text-gray-800 rounded-button text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
+Try This Style
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-80 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=fashion%20model%20wearing%20elegant%20evening%20gown%20with%20accessories%2C%20professional%20fashion%20photography%2C%20clean%20studio%20background%2C%20full%20body%20shot&width=400&height=600&seq=12&orientation=portrait" alt="Evening Elegance" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+<div class="p-6 text-white">
+<h3 class="text-lg font-semibold mb-1">Evening Elegance</h3>
+<p class="text-white/80 text-sm mb-3">Sophisticated styles for special occasions</p>
+<button class="px-4 py-2 bg-white text-gray-800 rounded-button text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
+Try This Style
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group">
+<div class="h-80 overflow-hidden relative">
+<img src="https://readdy.ai/api/search-image?query=fashion%20model%20wearing%20casual%20weekend%20outfit%20with%20jeans%20and%20stylish%20top%2C%20professional%20fashion%20photography%2C%20clean%20studio%20background%2C%20full%20body%20shot&width=400&height=600&seq=13&orientation=portrait" alt="Weekend Casual" class="w-full h-full object-cover object-top transition-transform group-hover:scale-105">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+<div class="p-6 text-white">
+<h3 class="text-lg font-semibold mb-1">Weekend Casual</h3>
+<p class="text-white/80 text-sm mb-3">Effortless style for your days off</p>
+<button class="px-4 py-2 bg-white text-gray-800 rounded-button text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
+Try This Style
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Technical Information -->
+<div class="mt-12 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+<h2 class="text-xl font-semibold mb-6">Detailed Specifications</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div>
+<h3 class="font-medium mb-4 flex items-center">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mr-2">
+<i class="ri-ruler-line"></i>
+</div>
+Size & Fit
+</h3>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Model Height</span>
+<span>5'9" / 175 cm</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Model Size</span>
+<span>US 4 / UK 8 / EU 36</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Length</span>
+<span>41.5" / 105 cm</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Fit Type</span>
+<span>Regular fit</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-medium mb-4 flex items-center">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mr-2">
+<i class="ri-t-shirt-line"></i>
+</div>
+Material & Care
+</h3>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Main Fabric</span>
+<span>95% Cotton, 5% Elastane</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Lining</span>
+<span>100% Polyester</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Washing</span>
+<span>Machine wash cold</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Ironing</span>
+<span>Low heat</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-medium mb-4 flex items-center">
+<div class="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full mr-2">
+<i class="ri-information-line"></i>
+</div>
+Additional Information
+</h3>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">SKU</span>
+<span>WR-2025-EFD-WHT</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Designer</span>
+<span>WEARITO Studio</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Country</span>
+<span>Made in Portugal</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-500">Sustainability</span>
+<span>Eco-friendly production</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-gray-100">
+<h3 class="font-medium mb-4">Size Chart</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead>
+<tr class="bg-gray-50">
+<th class="px-4 py-3 text-left font-medium text-gray-600">Size</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">Bust</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">Waist</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">Hips</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">US</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">UK</th>
+<th class="px-4 py-3 text-left font-medium text-gray-600">EU</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-gray-100">
+<td class="px-4 py-3">XS</td>
+<td class="px-4 py-3">32"</td>
+<td class="px-4 py-3">24"</td>
+<td class="px-4 py-3">34"</td>
+<td class="px-4 py-3">0-2</td>
+<td class="px-4 py-3">4-6</td>
+<td class="px-4 py-3">32-34</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="px-4 py-3">S</td>
+<td class="px-4 py-3">34"</td>
+<td class="px-4 py-3">26"</td>
+<td class="px-4 py-3">36"</td>
+<td class="px-4 py-3">4</td>
+<td class="px-4 py-3">8</td>
+<td class="px-4 py-3">36</td>
+</tr>
+<tr class="border-b border-gray-100 bg-primary/5">
+<td class="px-4 py-3 font-medium">M</td>
+<td class="px-4 py-3 font-medium">36"</td>
+<td class="px-4 py-3 font-medium">28"</td>
+<td class="px-4 py-3 font-medium">38"</td>
+<td class="px-4 py-3 font-medium">6</td>
+<td class="px-4 py-3 font-medium">10</td>
+<td class="px-4 py-3 font-medium">38</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="px-4 py-3">L</td>
+<td class="px-4 py-3">38"</td>
+<td class="px-4 py-3">30"</td>
+<td class="px-4 py-3">40"</td>
+<td class="px-4 py-3">8</td>
+<td class="px-4 py-3">12</td>
+<td class="px-4 py-3">40</td>
+</tr>
+<tr>
+<td class="px-4 py-3">XL</td>
+<td class="px-4 py-3">40"</td>
+<td class="px-4 py-3">32"</td>
+<td class="px-4 py-3">42"</td>
+<td class="px-4 py-3">10</td>
+<td class="px-4 py-3">14</td>
+<td class="px-4 py-3">42</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex items-center text-sm text-primary">
+<div class="w-5 h-5 flex items-center justify-center mr-1">
+<i class="ri-magic-line"></i>
+</div>
+<span>Based on your measurements, we recommend size M</span>
+</div>
+</div>
+</div>
+<!-- Virtual Styling Assistant -->
+<div class="fixed bottom-6 right-6 z-50">
+<button class="w-14 h-14 flex items-center justify-center bg-primary rounded-full shadow-lg text-white hover:bg-primary/90 transition-colors">
+<i class="ri-customer-service-2-line text-xl"></i>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-gray-50 mt-16 pt-12 pb-6">
+<div class="container mx-auto px-4">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+<div>
+<div class="font-['Pacifico'] text-2xl text-primary mb-4">WEARITO</div>
+<p class="text-gray-600 text-sm mb-4">Revolutionizing fashion with AI-powered 3D visualization and virtual try-on technology.</p>
+<div class="flex space-x-4">
+<a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<i class="ri-facebook-fill"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<i class="ri-instagram-line"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<i class="ri-twitter-x-line"></i>
+</a>
+<a href="#" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition-colors">
+<i class="ri-pinterest-line"></i>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-medium mb-4">Shop</h4>
+<ul class="space-y-2 text-sm text-gray-600">
+<li><a href="#" class="hover:text-primary transition-colors">Women's Collection</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Men's Collection</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">New Arrivals</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Trending Styles</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Accessories</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Sale</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Technology</h4>
+<ul class="space-y-2 text-sm text-gray-600">
+<li><a href="#" class="hover:text-primary transition-colors">3D Visualization</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Virtual Try-On</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">AI Recommendations</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Size Guide Technology</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">AR Features</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Developer API</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-medium mb-4">Help & Info</h4>
+<ul class="space-y-2 text-sm text-gray-600">
+<li><a href="#" class="hover:text-primary transition-colors">Customer Support</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Shipping & Returns</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Privacy Policy</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Terms of Service</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">About Us</a></li>
+<li><a href="#" class="hover:text-primary transition-colors">Contact</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-6 border-t border-gray-200">
+<div class="flex flex-col md:flex-row md:justify-between md:items-center">
+<div class="mb-4 md:mb-0">
+<p class="text-sm text-gray-500">&copy; 2025 WEARITO. All rights reserved.</p>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center text-gray-500 text-sm">
+<span>We accept:</span>
+<div class="flex ml-2 space-x-2">
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-visa-fill text-blue-700"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-mastercard-fill text-orange-500"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-paypal-fill text-blue-600"></i>
+</div>
+<div class="w-8 h-5 flex items-center justify-center">
+<i class="ri-apple-fill"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+// Virtual Try-On button
+const virtualTryOnBtn = document.querySelector('button:has(.ri-camera-line)');
+if(virtualTryOnBtn) {
+virtualTryOnBtn.addEventListener('click', function() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+modal.innerHTML = `
+<div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 relative">
+<button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+<i class="ri-close-line text-xl"></i>
+</button>
+<h3 class="text-lg font-semibold mb-4">Virtual Try-On with AR</h3>
+<p class="text-gray-600 mb-6">Please allow camera access to start virtual try-on experience</p>
+<div class="aspect-video bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+<i class="ri-camera-line text-4xl text-gray-400"></i>
+</div>
+<div class="flex justify-end">
+<button class="px-4 py-2 bg-primary text-white rounded-button">Start AR Experience</button>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const closeBtn = modal.querySelector('.ri-close-line').parentElement;
+closeBtn.addEventListener('click', () => modal.remove());
+modal.addEventListener('click', (e) => {
+if(e.target === modal) modal.remove();
+});
+});
+}
+// Share button
+const shareBtn = document.querySelector('button:has(.ri-share-line)');
+if(shareBtn) {
+shareBtn.addEventListener('click', function() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+modal.innerHTML = `
+<div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 relative">
+<button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+<i class="ri-close-line text-xl"></i>
+</button>
+<h3 class="text-lg font-semibold mb-4">Share This Look</h3>
+<div class="grid grid-cols-4 gap-4 mb-6">
+<button class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+<i class="ri-facebook-fill text-xl"></i>
+</div>
+<span class="text-xs">Facebook</span>
+</button>
+<button class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center">
+<i class="ri-instagram-line text-xl"></i>
+</div>
+<span class="text-xs">Instagram</span>
+</button>
+<button class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-gray-100 text-gray-800 flex items-center justify-center">
+<i class="ri-twitter-x-line text-xl"></i>
+</div>
+<span class="text-xs">Twitter</span>
+</button>
+<button class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+<i class="ri-pinterest-line text-xl"></i>
+</div>
+<span class="text-xs">Pinterest</span>
+</button>
+</div>
+<div class="relative">
+<input type="text" value="${window.location.href}" class="w-full px-4 py-2 border border-gray-200 rounded-button text-sm" readonly>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 bg-gray-100 text-sm rounded-button">Copy</button>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+const closeBtn = modal.querySelector('.ri-close-line').parentElement;
+closeBtn.addEventListener('click', () => modal.remove());
+modal.addEventListener('click', (e) => {
+if(e.target === modal) modal.remove();
+});
+const copyBtn = modal.querySelector('button:last-child');
+const input = modal.querySelector('input');
+copyBtn.addEventListener('click', () => {
+input.select();
+document.execCommand('copy');
+copyBtn.textContent = 'Copied!';
+setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+});
+});
+}
+// Customer service chat button
+const chatBtn = document.querySelector('.fixed.bottom-6.right-6 button');
+if(chatBtn) {
+chatBtn.addEventListener('click', function() {
+const chatWindow = document.createElement('div');
+chatWindow.className = 'fixed bottom-24 right-6 bg-white rounded-lg shadow-xl w-80 z-50 transition-transform duration-300';
+chatWindow.innerHTML = `
+<div class="p-4 bg-primary text-white rounded-t-lg flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+<i class="ri-customer-service-2-line"></i>
+</div>
+<div>
+<div class="font-medium">Virtual Stylist</div>
+<div class="text-xs text-white/80">Online</div>
+</div>
+</div>
+<button class="text-white/80 hover:text-white">
+<i class="ri-close-line text-xl"></i>
+</button>
+</div>
+<div class="h-80 p-4 overflow-y-auto" id="chatMessages">
+<div class="flex gap-2 mb-4">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<i class="ri-customer-service-2-line"></i>
+</div>
+<div class="bg-gray-100 rounded-lg p-3 text-sm max-w-[80%]">
+Hello! I'm your virtual stylist. How can I help you today?
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-gray-100">
+<div class="flex gap-2">
+<input type="text" placeholder="Type your message..." class="flex-1 px-4 py-2 border border-gray-200 rounded-button text-sm">
+<button class="px-4 py-2 bg-primary text-white rounded-button">
+<i class="ri-send-plane-line"></i>
+</button>
+</div>
+</div>
+`;
+document.body.appendChild(chatWindow);
+const closeBtn = chatWindow.querySelector('.ri-close-line').parentElement;
+closeBtn.addEventListener('click', () => chatWindow.remove());
+const input = chatWindow.querySelector('input');
+const sendBtn = chatWindow.querySelector('button:last-child');
+const messagesContainer = chatWindow.querySelector('#chatMessages');
+function sendMessage() {
+if(input.value.trim()) {
+const userMessage = document.createElement('div');
+userMessage.className = 'flex gap-2 mb-4 justify-end';
+userMessage.innerHTML = `
+<div class="bg-primary text-white rounded-lg p-3 text-sm max-w-[80%]">
+${input.value}
+</div>
+`;
+messagesContainer.appendChild(userMessage);
+messagesContainer.scrollTop = messagesContainer.scrollHeight;
+input.value = '';
+setTimeout(() => {
+const botMessage = document.createElement('div');
+botMessage.className = 'flex gap-2 mb-4';
+botMessage.innerHTML = `
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<i class="ri-customer-service-2-line"></i>
+</div>
+<div class="bg-gray-100 rounded-lg p-3 text-sm max-w-[80%]">
+Thank you for your message. A stylist will respond shortly.
+</div>
+`;
+messagesContainer.appendChild(botMessage);
+messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}, 1000);
+}
+}
+sendBtn.addEventListener('click', sendMessage);
+input.addEventListener('keypress', (e) => {
+if(e.key === 'Enter') sendMessage();
+});
+});
+}
+// Update measurement unit toggles
+const unitToggleBtns = document.querySelectorAll('button:has(.ri-arrow-right-s-line)').forEach(btn => {
+if(btn.previousElementSibling && btn.previousElementSibling.tagName === 'INPUT') {
+btn.addEventListener('click', function() {
+const units = ['ft/in', 'cm', 'm'];
+const currentUnit = this.textContent;
+const currentIndex = units.indexOf(currentUnit);
+const nextUnit = units[(currentIndex + 1) % units.length];
+this.textContent = nextUnit;
+});
+}
+});
+// Update measurement switch
+const measurementSwitch = document.querySelector('.custom-switch input');
+if(measurementSwitch) {
+measurementSwitch.addEventListener('change', function() {
+const measurementInputs = document.querySelectorAll('input[type="text"]');
+measurementInputs.forEach(input => {
+input.disabled = this.checked;
+});
+});
+}
+// Update style try buttons
+document.querySelectorAll('button:contains("Try This Style")').forEach(btn => {
+btn.addEventListener('click', function() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+modal.innerHTML = `
+<div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+<h3 class="text-lg font-semibold mb-4">Try Complete Look</h3>
+<p class="text-gray-600 mb-4">Would you like to try on this complete outfit with your avatar?</p>
+<div class="flex justify-end gap-4">
+<button class="px-4 py-2 border border-gray-200 rounded-button">Cancel</button>
+<button class="px-4 py-2 bg-primary text-white rounded-button">Try Now</button>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+modal.addEventListener('click', (e) => {
+if(e.target === modal) modal.remove();
+});
+const [cancelBtn, tryBtn] = modal.querySelectorAll('button');
+cancelBtn.addEventListener('click', () => modal.remove());
+tryBtn.addEventListener('click', () => {
+modal.innerHTML = `
+<div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+<div class="flex items-center justify-center mb-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+<i class="ri-loader-4-line animate-spin text-xl"></i>
+</div>
+</div>
+<p class="text-center text-gray-600">Preparing your virtual fitting room...</p>
+</div>
+`;
+setTimeout(() => modal.remove(), 2000);
+});
+});
+});
+// Size selection
+const sizeButtons = document.querySelectorAll('[class*="border-gray-200"]');
+sizeButtons.forEach(button => {
+button.addEventListener('click', function() {
+sizeButtons.forEach(btn => {
+btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+btn.classList.add('border-gray-200');
+});
+this.classList.remove('border-gray-200');
+this.classList.add('bg-primary', 'text-white', 'border-primary');
+});
+});
+// Color selection
+// Product color variants image mappings
+const colorVariants = {
+white: {
+main: [
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20front%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=14&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20side%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=15&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20back%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=16&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20fabric%20detail%2C%20close-up%20texture%2C%20professional%20studio%20lighting&width=800&height=600&seq=17&orientation=landscape"
+],
+title: "Elegant Flare Dress"
+},
+black: {
+main: [
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20black%20dress%20on%20an%20invisible%20mannequin%2C%20front%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=18&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20black%20dress%20on%20an%20invisible%20mannequin%2C%20side%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=19&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20black%20dress%20on%20an%20invisible%20mannequin%2C%20back%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=20&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20black%20dress%20fabric%20detail%2C%20close-up%20texture%2C%20professional%20studio%20lighting&width=800&height=600&seq=21&orientation=landscape"
+],
+title: "Elegant Flare Dress - Black"
+}
+};
+const colorButtons = document.querySelectorAll('.rounded-full.bg-white, .rounded-full.bg-black, .rounded-full.bg-red-500, .rounded-full.bg-blue-500, .rounded-full.bg-green-500');
+colorButtons.forEach(button => {
+button.addEventListener('click', function() {
+// Update color button borders
+colorButtons.forEach(btn => btn.classList.remove('border-primary'));
+this.classList.add('border-primary');
+// Determine selected color
+const isBlack = this.classList.contains('bg-black');
+const selectedColor = isBlack ? 'black' : 'white';
+// Update product title
+document.querySelector('h1').textContent = colorVariants[selectedColor].title;
+// Update main product images array
+viewImages.splice(0, viewImages.length, ...colorVariants[selectedColor].main);
+// Update current image and thumbnails
+const viewAngles = document.querySelectorAll('.view-angle img');
+viewAngles.forEach((img, index) => {
+img.src = colorVariants[selectedColor].main[index];
+});
+// Update main product image
+document.getElementById('mainProductImage').src = colorVariants[selectedColor].main[currentImageIndex];
+});
+});
+// Heart/Favorite buttons
+const heartButtons = document.querySelectorAll('.ri-heart-line').forEach(button => {
+button.addEventListener('click', function() {
+this.classList.toggle('ri-heart-line');
+this.classList.toggle('ri-heart-fill');
+this.classList.toggle('text-red-500');
+});
+});
+// Fit adjustment slider
+const fitSlider = document.getElementById('fitSlider');
+if (fitSlider) {
+fitSlider.addEventListener('input', function() {
+const value = ((this.value - this.min) / (this.max - this.min)) * 100;
+this.style.backgroundImage = `linear-gradient(to right, #6366f1 ${value}%, #e5e7eb ${value}%)`;
+});
+const value = ((fitSlider.value - fitSlider.min) / (fitSlider.max - fitSlider.min)) * 100;
+fitSlider.style.backgroundImage = `linear-gradient(to right, #6366f1 ${value}%, #e5e7eb ${value}%)`;
+}
+// View angle thumbnails with image change
+const mainImage = document.getElementById('mainProductImage');
+const viewAngles = document.querySelectorAll('.view-angle');
+const viewImages = [
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20front%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=14&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20side%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=15&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20on%20an%20invisible%20mannequin%2C%20back%20view%2C%20professional%20studio%20lighting&width=800&height=600&seq=16&orientation=landscape",
+"https://readdy.ai/api/search-image?query=photorealistic%203D%20model%20of%20a%20stylish%20modern%20white%20dress%20fabric%20detail%2C%20close-up%20texture%2C%20professional%20studio%20lighting&width=800&height=600&seq=17&orientation=landscape"
+];
+let currentImageIndex = 0;
+function changeImage(index, direction = null) {
+if (index < 0) index = viewImages.length - 1;
+if (index >= viewImages.length) index = 0;
+currentImageIndex = index;
+const slideDirection = direction === 'left' ? 'translateX(100%)' : direction === 'right' ? 'translateX(-100%)' : '';
+mainImage.style.opacity = '0';
+mainImage.style.transform = `scale(${scale}) ${slideDirection}`;
+setTimeout(() => {
+mainImage.src = viewImages[index];
+mainImage.onload = () => {
+mainImage.style.opacity = '1';
+mainImage.style.transform = `scale(${scale})`;
+};
+viewAngles.forEach((a, i) => {
+if (i === index) {
+a.classList.add('active');
+} else {
+a.classList.remove('active');
+}
+});
+}, 300);
+}
+viewAngles.forEach((angle, index) => {
+angle.addEventListener('click', function() {
+if (currentImageIndex !== index) {
+const direction = index > currentImageIndex ? 'left' : 'right';
+changeImage(index, direction);
+}
+});
+});
+// Add rotation control buttons functionality
+const rotateLeftBtn = document.querySelector('.rotate-controls button:first-child');
+const rotateRightBtn = document.querySelector('.rotate-controls button:last-child');
+rotateLeftBtn.addEventListener('click', () => {
+changeImage(currentImageIndex - 1, 'right');
+});
+rotateRightBtn.addEventListener('click', () => {
+changeImage(currentImageIndex + 1, 'left');
+});
+// Add keyboard arrow keys support
+document.addEventListener('keydown', (e) => {
+if (e.key === 'ArrowLeft') {
+changeImage(currentImageIndex - 1, 'right');
+} else if (e.key === 'ArrowRight') {
+changeImage(currentImageIndex + 1, 'left');
+}
+});
+// Zoom controls
+const zoomButtons = document.querySelectorAll('.ri-zoom-in-line, .ri-zoom-out-line');
+let scale = 1;
+zoomButtons.forEach(button => {
+button.addEventListener('click', function() {
+if (this.classList.contains('ri-zoom-in-line') && scale < 2) {
+scale += 0.2;
+} else if (this.classList.contains('ri-zoom-out-line') && scale > 0.6) {
+scale -= 0.2;
+}
+mainImage.style.transform = `scale(${scale})`;
+});
+});
+// Add to Cart animation
+const addToCartBtn = document.querySelector('.bg-primary.text-white.py-3');
+if (addToCartBtn) {
+addToCartBtn.addEventListener('click', function() {
+const cartIcon = document.querySelector('.ri-shopping-bag-line');
+cartIcon.classList.add('animate-bounce');
+setTimeout(() => {
+cartIcon.classList.remove('animate-bounce');
+}, 1000);
+// Show notification
+const notification = document.createElement('div');
+notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50';
+notification.textContent = 'Added to cart successfully!';
+document.body.appendChild(notification);
+setTimeout(() => {
+notification.remove();
+}, 3000);
+});
+}
+// Try On My Avatar button
+const tryOnButton = document.querySelector('button:has(.ri-user-line)');
+if (tryOnButton) {
+tryOnButton.addEventListener('click', function() {
+const modal = document.createElement('div');
+modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+modal.innerHTML = `
+<div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+<h3 class="text-lg font-semibold mb-4">Virtual Try-On</h3>
+<p class="text-gray-600 mb-4">Please wait while we prepare your virtual fitting room...</p>
+<div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+<div class="h-full bg-primary animate-[loading_2s_ease-in-out_infinite]"></div>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+modal.addEventListener('click', function(e) {
+if (e.target === modal) {
+modal.remove();
+}
+});
+setTimeout(() => {
+modal.remove();
+}, 3000);
+});
+}
+});
+// Add loading animation
+const style = document.createElement('style');
+style.textContent = `
+@keyframes loading {
+0% { width: 0% }
+50% { width: 100% }
+100% { width: 0% }
+}
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
